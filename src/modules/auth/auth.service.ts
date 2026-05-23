@@ -8,8 +8,9 @@ const logInUserIntoDb = async (payLoad: {
   password: string;
 }) => {
   const { email, password } = payLoad;
+  // id, name, email, role, password, created_at, updated_at
   const userData = await pool.query(
-    `SELECT id, name, email, role, password, created_at, updated_at FROM users WHERE email=$1
+    `SELECT * FROM users WHERE email=$1
         `,
     [email],
   );
@@ -17,6 +18,7 @@ const logInUserIntoDb = async (payLoad: {
     throw new Error("Invalid Credentials emails!");
   }
   const user = userData.rows[0];
+  
   const matchPassword = await bcrypt.compare(password, user.password);
   if (!matchPassword) {
     throw new Error("Invalid Credentials!");

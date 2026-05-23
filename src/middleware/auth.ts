@@ -10,10 +10,7 @@ const auth = (...roles: ROLES[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {
     // console.log(roles)
     try {
-    // 1. Check if the token exists
-    // 2. Verify the token
-    // 3. Find the user into database
-    // 4. If the user active or not?
+// 1. Check if the token exists2. Verify the token 3. Find the user into database 4. If the user active or not?
     const token = req.headers.authorization;
     if (!token) {
       res.status(401).json({
