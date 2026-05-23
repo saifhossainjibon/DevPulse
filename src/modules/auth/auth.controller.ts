@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { authService } from "./auth.service";
+import sendResponse from "../../utils/sendResponse";
 
 const loginUser = async (req: Request, res: Response) => {
   try {
@@ -10,17 +11,19 @@ const loginUser = async (req: Request, res: Response) => {
       httpOnly:true,
       sameSite:'lax'
     })
-    res.status(200).json({
-      success: true,
-      message: "User logIn successfully!",
-      data: result,
-    });
+    sendResponse(res,{
+      statusCode:200,
+      success:true,
+      message:"Login successful",
+      data:result,
+    })
   } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
+    sendResponse(res,{
+      statusCode:500,
+      success:false,
+      message:error.message,
       error: error,
-    });
+    })
   }
 };
 
@@ -28,18 +31,19 @@ const refreshToken =async(req: Request, res: Response)=>{
   // console.log(req.cookies)
     try {
     const result = await authService.genarateRefreshToken(req.cookies.refreshToken)
-
-    res.status(200).json({
-      success: true,
-      message: "Access Token Genarated!",
-      data: result,
-    });
+    sendResponse(res,{
+      statusCode:200,
+      success:true,
+      message:"Login successful",
+      data:result,
+    })
   } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
+    sendResponse(res,{
+      statusCode:500,
+      success:false,
+      message:error.message,
       error: error,
-    });
+    })
   }
 }
 export const authController = {

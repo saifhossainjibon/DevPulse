@@ -1,23 +1,25 @@
 import type { Request, Response } from "express";
 import { issueService } from "./issue.service";
+import sendResponse from "../../utils/sendResponse";
 
 const createIssue = async (req: Request, res: Response) => {
   try {
     // console.log("from controller",req.body)
     // const userId = (req as any).user.id; 
     const result = await issueService.createIssueIntoDb(req.body);
-    console.log(result)
-    res.status(201).json({
-      success: true,
-      massage: "issue created successfully",
-      data: result,
-    });
+    sendResponse(res,{
+      statusCode:200,
+      success:true,
+      message:"Issue created successfully",
+      data:result,
+    })
   } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
+    sendResponse(res,{
+      statusCode:500,
+      success:false,
+      message:error.message,
       error: error,
-    });
+    })
   }
 };
 const deleteIssue=async (req: Request, res: Response) => {
@@ -25,17 +27,18 @@ const deleteIssue=async (req: Request, res: Response) => {
   try {
     const result = await issueService.deleteIssueFromDb(id as string)
     if (result.rowCount === 0) {
-      res.status(404).json({
-        success: false,
-        massage: "issue not found",
-        data: {},
-      });
+      sendResponse(res,{
+      statusCode:404,
+      success:false,
+      message:"issue not found",
+    })
     }
-    res.status(200).json({
-      success: true,
-      massage: "Issue deleted successfully",
-      data: {},
-    });
+        sendResponse(res,{
+      statusCode:200,
+      success:true,
+      message:"Issue deleted successfully",
+      data:result,
+    })
   } catch (error: any) {
     res.status(500).json({
       success: false,
@@ -50,23 +53,24 @@ const updateIssue= async (req: Request, res: Response) => {
     const result = await issueService.updateIssueFromDb(req.body, id as string)
     console.log(result);
     if (result.rows.length === 0) {
-      res.status(404).json({
-        success: false,
-        massage: "users not found",
-        data: {},
-      });
+      sendResponse(res,{
+      statusCode:404,
+      success:false,
+      message:"issue not found",
+    })
     }
-    res.status(200).json({
-      success: true,
-      massage: "single User updated successfully",
-      data: result.rows[0],
-    });
+      sendResponse(res,{
+      statusCode:200,
+      success:true,
+      message:"Issue retrived successfully",
+      data:result.rows[0],
+    })
   } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-      error: error,
-    });
+      sendResponse(res,{
+      statusCode:500,
+      success:false,
+      message:"issue not found",
+    })
   }
 }
 const getSingleIssue = async (req: Request, res: Response) => {
