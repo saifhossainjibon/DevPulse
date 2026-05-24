@@ -67,14 +67,44 @@ const getSingleIssueFromDb = async (id: string) => {
   };
 };
 
-const getAllIssueFromDb = async (sort: string = "newest") => {
-  let query = `SELECT * FROM issues`;
-  if (sort === "oldest") {
-    query += ` ORDER BY created_at ASC`;
+const getAllIssueFromDb = async (queryList: any) => {
+  const { sort = "newest", type, status } = queryList;
+  let issueResult;
+  if (type && status) {
+    issueResult = await pool.query(
+      `
+            SELECT * FROM issues 
+            WHERE type = $1 AND status = $2
+        `,
+      [type, status],
+    );
+  } else if (type) {
+    issueResult = await pool.query(
+      `
+            SELECT * FROM issues 
+            WHERE type = $1
+        `,
+      [type],
+    );
+  } else if (status) {
+    issueResult = await pool.query(
+      `
+            SELECT * FROM issues 
+            WHERE status = $1
+        `,
+      [status],
+    );
   } else {
-    query += ` ORDER BY created_at DESC`;
+    if (sort === "oldest") {
+      issueResult = await pool.query(`
+                SELECT * FROM issues ORDER BY created_at ASC
+            `);
+    } else {
+      issueResult = await pool.query(`
+                SELECT * FROM issues ORDER BY created_at DESC
+            `);
+    }
   }
-  const issueResult = await pool.query(query);
   const issues = issueResult.rows;
   const finalIssues = [];
   for (const issue of issues) {

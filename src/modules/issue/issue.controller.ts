@@ -122,8 +122,15 @@ const getSingleIssue = async (req: Request, res: Response) => {
 };
 const getAllIssue = async (req: Request, res: Response) => {
   try {
-    const sort = req.query.sort as string;
-    const result = await issueService.getAllIssueFromDb(sort);
+    const result = await issueService.getAllIssueFromDb(req.query);
+    console.log(result)
+    if (result.length === 0) {
+      sendResponse(res, {
+        statusCode: 404,
+        success: false,
+        message: "No issue found",
+      });
+    }
     res.status(200).json({
       success: true,
       message: "Issues retrieved successfully",
