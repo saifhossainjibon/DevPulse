@@ -4,11 +4,10 @@ import sendResponse from "../../utils/sendResponse";
 
 const createIssue = async (req: Request, res: Response) => {
   try {
-    // console.log("from create issue",req.user)
     const user = req.user;
     const result = await issueService.createIssueIntoDb(req.body, user);
     sendResponse(res, {
-      statusCode: 200,
+      statusCode: 201,
       success: true,
       message: "Issue created successfully",
       data: result,
@@ -35,7 +34,7 @@ const deleteIssue = async (req: Request, res: Response) => {
       });
     }
     sendResponse(res, {
-      statusCode: 200,
+      statusCode: 204,
       success: true,
       message: "Issue deleted successfully",
     });
@@ -98,15 +97,12 @@ const getSingleIssue = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const issue = await issueService.getSingleIssueFromDb(id as string);
-
     if (!issue) {
       return res.status(404).json({
         success: false,
         message: "Issue not found",
-        data: {},
       });
     }
-
     res.status(200).json({
       success: true,
       message: "Issue retrieved successfully",
@@ -123,14 +119,13 @@ const getSingleIssue = async (req: Request, res: Response) => {
 const getAllIssue = async (req: Request, res: Response) => {
   try {
     const result = await issueService.getAllIssueFromDb(req.query);
-    console.log(result)
-    if (result.length === 0) {
-      sendResponse(res, {
-        statusCode: 404,
-        success: false,
-        message: "No issue found",
-      });
-    }
+    // if (result.length === 0) {
+    //   sendResponse(res, {
+    //     statusCode: 404,
+    //     success: false,
+    //     message: "No issue found",
+    //   });
+    // }
     res.status(200).json({
       success: true,
       message: "Issues retrieved successfully",
