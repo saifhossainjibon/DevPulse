@@ -4,41 +4,41 @@ import sendResponse from "../../utils/sendResponse";
 
 const createIssue = async (req: Request, res: Response) => {
   try {
-    console.log("from create issue",req.user)
-    const user = req.user
+    // console.log("from create issue",req.user)
+    const user = req.user;
     const result = await issueService.createIssueIntoDb(req.body, user);
-    sendResponse(res,{
-      statusCode:200,
-      success:true,
-      message:"Issue created successfully",
-      data:result,
-    })
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Issue created successfully",
+      data: result,
+    });
   } catch (error: any) {
-    sendResponse(res,{
-      statusCode:500,
-      success:false,
-      message:error.message,
+    sendResponse(res, {
+      statusCode: 500,
+      success: false,
+      message: error.message,
       error: error,
-    })
+    });
   }
 };
-const deleteIssue=async (req: Request, res: Response) => {
+const deleteIssue = async (req: Request, res: Response) => {
   const { id } = req.params;
+  console.log("from deleted-", req.user);
   try {
-    const result = await issueService.deleteIssueFromDb(id as string)
+    const result = await issueService.deleteIssueFromDb(id as string);
     if (result.rowCount === 0) {
-      sendResponse(res,{
-      statusCode:404,
-      success:false,
-      message:"issue not found",
-    })
+      sendResponse(res, {
+        statusCode: 404,
+        success: false,
+        message: "issue not found",
+      });
     }
-        sendResponse(res,{
-      statusCode:200,
-      success:true,
-      message:"Issue deleted successfully",
-      data:result,
-    })
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Issue deleted successfully",
+    });
   } catch (error: any) {
     res.status(500).json({
       success: false,
@@ -46,34 +46,79 @@ const deleteIssue=async (req: Request, res: Response) => {
       error: error,
     });
   }
-}
-const updateIssue= async (req: Request, res: Response) => {
+};
+// const updateIssue = async (req: Request, res: Response) => {
+//   const { id } = req.params;
+//   try {
+//     const result = await issueService.updateIssueFromDb(req.body, id as string);
+//     if (result.rows.length === 0) {
+//       sendResponse(res, {
+//         statusCode: 404,
+//         success: false,
+//         message: "issue not found",
+//       });
+//     }
+//     sendResponse(res, {
+//       statusCode: 200,
+//       success: true,
+//       message: "Issue retrived successfully",
+//       data: result.rows[0],
+//     });
+//   } catch (error: any) {
+//     sendResponse(res, {
+//       statusCode: 500,
+//       success: false,
+//       message: "issue not found",
+//     });
+//   }
+// };
+const updateIssue = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-      console.log("req----",req.user)
-    const result = await issueService.updateIssueFromDb(req.body, id as string)
-    // console.log(result);
-    if (result.rows.length === 0) {
-      sendResponse(res,{
-      statusCode:404,
-      success:false,
-      message:"issue not found",
-    })
+    const issueResult = await issueService.getSingleIssueFromDb(id as string);
+    if (!issueResult) {
+      return sendResponse(res, {
+        statusCode: 404,
+        success: false,
+        message: "Issue not found",
+      });
     }
-      sendResponse(res,{
-      statusCode:200,
-      success:true,
-      message:"Issue retrived successfully",
-      data:result.rows[0],
-    })
+    if (req.user.role === "contributor") {
+      if (issueResult.reporter?.id !== req.user.id) {
+        return sendResponse(res, {
+          statusCode: 403,
+          success: false,
+          message: "You are not authorized",
+        });
+      }
+      if (issueResult.status !== "open") {
+        return sendResponse(res, {
+          statusCode: 403,
+          success: false,
+          message: "You can only update open issues",
+        });
+      }
+    }
+    const updatedResult = await issueService.updateIssueFromDb(
+      req.body,
+      id as string
+    );
+
+    return sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Issue updated successfully",
+      data: updatedResult.rows[0],
+    });
   } catch (error: any) {
-      sendResponse(res,{
-      statusCode:500,
-      success:false,
-      message:"issue not found",
-    })
+    return sendResponse(res, {
+      statusCode: 500,
+      success: false,
+      message: error.message,
+    });
   }
-}
+};
+
 const getSingleIssue = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -119,5 +164,9 @@ const getAllIssue = async (req: Request, res: Response) => {
   }
 };
 export const issueController = {
-  createIssue,deleteIssue,updateIssue,getSingleIssue,getAllIssue
+  createIssue,
+  deleteIssue,
+  updateIssue,
+  getSingleIssue,
+  getAllIssue,
 };

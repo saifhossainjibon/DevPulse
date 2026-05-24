@@ -8,7 +8,7 @@ const router = Router();
 router.post("/",auth(USER_ROLE.contributor,USER_ROLE.maintainer),issueController.createIssue) //done
 router.get("/",issueController.getAllIssue) //done
 router.get("/:id",issueController.getSingleIssue) // done
-router.patch("/:id",issueController.updateIssue) //done
+router.patch("/:id",auth(USER_ROLE.contributor,USER_ROLE.maintainer),issueController.updateIssue) //done
 router.delete("/:id",issueController.deleteIssue) // done
 // router.post("/refresh-token",authController.refreshToken)
 export const issueRoute = router;
