@@ -62,7 +62,6 @@
 - `bcrypt` - Password hashing (10 salt rounds)
 - `pg` - PostgreSQL database driver
 - `dotenv` - Environment variable management
-- `cors` - Cross-origin resource sharing
 
 
 ## 🗄️ Database Schema
