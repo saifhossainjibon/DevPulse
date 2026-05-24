@@ -8,7 +8,6 @@ const logInUserIntoDb = async (payLoad: {
   password: string;
 }) => {
   const { email, password } = payLoad;
-  // id, name, email, role, password, created_at, updated_at
   const userData = await pool.query(
     `SELECT * FROM users WHERE email=$1
         `,
@@ -18,7 +17,7 @@ const logInUserIntoDb = async (payLoad: {
     throw new Error("Invalid Credentials emails!");
   }
   const user = userData.rows[0];
-  
+
   const matchPassword = await bcrypt.compare(password, user.password);
   if (!matchPassword) {
     throw new Error("Invalid Credentials!");
@@ -30,15 +29,11 @@ const logInUserIntoDb = async (payLoad: {
     role:user.role,
     email: user.email,
   };
-  const accessToken = jwt.sign(jwtpayload, config.secret as string, {
-    expiresIn: "1d",
-  });
-  const refreshToken = jwt.sign(jwtpayload, config.refresh_secret as string, {
+  const token = jwt.sign(jwtpayload, config.secret as string, {
     expiresIn: "1d",
   });
 return {
-  accessToken,
-  refreshToken,
+  token,
   user: {
     id: user.id,
     name: user.name,
@@ -49,40 +44,6 @@ return {
   }
 };
 };
-
-const genarateRefreshToken=async(token:string)=>{
-    if (!token) {
-      throw new Error("Unauthorized!!")
-    }
-    const decoded = jwt.verify(
-      token as string,
-      config.refresh_secret as string,
-    ) as JwtPayload;
-
-    const userData = await pool.query(
-      `
-        SELECT * FROM users WHERE email=$1
-        `,
-      [decoded.email],
-    );
-
-    const user = userData.rows[0];
-    if (userData.rows.length === 0) {
-      throw new Error("User Not Found!!")
-    }
-
-    const jwtpayload = {
-    id: user.id,
-    name: user.name,
-    role:user.role,
-    email: user.email,
-  };
-    const accessToken = jwt.sign(jwtpayload, config.secret as string, {
-      expiresIn: "1d",
-    });
-    return {accessToken}
-}
-
 export const authService = {
-  logInUserIntoDb,genarateRefreshToken
+  logInUserIntoDb
 };

@@ -27,25 +27,27 @@ const loginUser = async (req: Request, res: Response) => {
   }
 };
 
-const refreshToken =async(req: Request, res: Response)=>{
-  // console.log(req.cookies)
-    try {
-    const result = await authService.genarateRefreshToken(req.cookies.refreshToken)
-    sendResponse(res,{
-      statusCode:200,
-      success:true,
-      message:"Login successful",
-      data:result,
-    })
-  } catch (error: any) {
-    sendResponse(res,{
-      statusCode:500,
-      success:false,
-      message:error.message,
-      error: error,
-    })
-  }
-}
+// const refreshToken =async(req: Request, res: Response)=>{
+//   // console.log(req.cookies)
+//     try {
+//     const result = await authService.genarateRefreshToken(req.cookies.refreshToken)
+//     sendResponse(res,{
+//       statusCode:200,
+//       success:true,
+//       message:"Login successful",
+//       data:result,
+//     })
+//   } catch (error: any) {
+//     sendResponse(res,{
+//       statusCode:500,
+//       success:false,
+//       message:error.message,
+//       error: error,
+//     })
+//   }
+// }
 export const authController = {
-  loginUser,refreshToken
+  loginUser
 };
+
+// refreshToken nai nai export e
