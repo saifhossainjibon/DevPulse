@@ -47,31 +47,6 @@ const deleteIssue = async (req: Request, res: Response) => {
     });
   }
 };
-// const updateIssue = async (req: Request, res: Response) => {
-//   const { id } = req.params;
-//   try {
-//     const result = await issueService.updateIssueFromDb(req.body, id as string);
-//     if (result.rows.length === 0) {
-//       sendResponse(res, {
-//         statusCode: 404,
-//         success: false,
-//         message: "issue not found",
-//       });
-//     }
-//     sendResponse(res, {
-//       statusCode: 200,
-//       success: true,
-//       message: "Issue retrived successfully",
-//       data: result.rows[0],
-//     });
-//   } catch (error: any) {
-//     sendResponse(res, {
-//       statusCode: 500,
-//       success: false,
-//       message: "issue not found",
-//     });
-//   }
-// };
 const updateIssue = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {

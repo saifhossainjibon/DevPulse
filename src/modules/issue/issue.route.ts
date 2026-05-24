@@ -5,10 +5,10 @@ import { USER_ROLE } from "../../types";
 
 
 const router = Router();
-router.post("/",auth(USER_ROLE.contributor,USER_ROLE.maintainer),issueController.createIssue) //done
-router.get("/",issueController.getAllIssue) //done
-router.get("/:id",issueController.getSingleIssue) // done
-router.patch("/:id",auth(USER_ROLE.contributor,USER_ROLE.maintainer),issueController.updateIssue) //done
-router.delete("/:id",issueController.deleteIssue) // done
+router.post("/",auth(USER_ROLE.contributor,USER_ROLE.maintainer),issueController.createIssue) 
+router.get("/",issueController.getAllIssue)
+router.get("/:id",issueController.getSingleIssue) 
+router.patch("/:id",auth(USER_ROLE.contributor,USER_ROLE.maintainer),issueController.updateIssue) 
+router.delete("/:id",auth(USER_ROLE.maintainer),issueController.deleteIssue) 
 // router.post("/refresh-token",authController.refreshToken)
 export const issueRoute = router;
