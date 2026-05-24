@@ -96,7 +96,6 @@ const updateIssue = async (req: Request, res: Response) => {
 
 const getSingleIssue = async (req: Request, res: Response) => {
   const { id } = req.params;
-
   try {
     const issue = await issueService.getSingleIssueFromDb(id as string);
 
@@ -123,12 +122,12 @@ const getSingleIssue = async (req: Request, res: Response) => {
 };
 const getAllIssue = async (req: Request, res: Response) => {
   try {
-    const result = await issueService.getAllIssueFromDb(req.query);
-
+    const sort = req.query.sort as string;
+    const result = await issueService.getAllIssueFromDb(sort);
     res.status(200).json({
       success: true,
       message: "Issues retrieved successfully",
-      data: result.rows,
+      data: result,
     });
   } catch (error: any) {
     res.status(500).json({
